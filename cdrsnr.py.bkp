@@ -22,6 +22,7 @@
 ##   -o, --output                       Output file                                             ##
 ##   -x, --exclude                      Excluded number regex pattern                           ##
 ##   -l, --list-forwarded               List number regex as forwarded to number                ##
+##   -a, --append                       File to append records to                               ##
 ##################################################################################################
 
 import csv
@@ -39,15 +40,22 @@ parser.add_argument('-n','--phonenumber', required=True, help='Phone number rege
 parser.add_argument('-o', '--output', required=False, help='Output file')
 parser.add_argument('-x', '--exclude', required=False, help='Excluded number regex pattern')
 parser.add_argument('-l', '--list-forwarded', required=False, help='List number regex as forwarded to number')
+parser.add_argument('-a', '--append', required=False, help='File to append records to')
 args = parser.parse_args()
 
 ## END of CLI switches
 
 ## Var's that can be changed
-if len(args.output) == 0:
+if len(args.output) == 0 and len(args.append) == 0:
     outputfile = "Call_Report_"+args.phonenumber+".csv"
-else:
+elif len(args.output) != 0 and len(args.append) == 0:
     outputfile = args.output
+
+if len(args.output) == 0 and len(args.append) != 0:
+    appendFile = args.append
+
+if len(args.output) != 0 and len(args.append) != 0:
+    raise SystemExit('Cannot have both output and append files!')
 
 ## Variable translations
 excludedNumberStr = args.exclude
@@ -56,9 +64,13 @@ forwardedNumberStr = args.list_forwarded
 ## arg.input is the input file
 phonenumber = args.phonenumber
 
-#create parsed output cvs 
-parsedoutput = open(outputfile, 'w+')
-parsedoutput.write("Incoming/Outgoing,Start of Call,End of Call,Duration (Seconds),Caller Number,Call Answered By,Call Forwarded To\n")
+#create parsed output cvs
+if len(outputfile) != 0:
+    parsedoutput = open(outputfile, 'w')
+    parsedoutput.write("Incoming/Outgoing,Start of Call,End of Call,Duration (Seconds),Caller Number,Call Answered By,Call Forwarded To\n")
+elif len(appendFile) != 0:
+    parsedoutput = open(appendFile, 'a')
+    
 ## columns needed:
 ## starting at zero
 ## 2 - globalCallID_callId

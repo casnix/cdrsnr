@@ -22,6 +22,7 @@
 ##   -o, --output                       Output file                                             ##
 ##   -x, --exclude                      Excluded number regex pattern                           ##
 ##   -l, --list-forwarded               List number regex as forwarded to number                ##
+##   -a, --append                       File to append records to                               ##
 ##################################################################################################
 
 import csv
@@ -32,6 +33,10 @@ import sys
 
 from re import search
 
+## Global decl
+outputfile = None
+appendFile = None
+
 ## CLI switches
 parser = argparse.ArgumentParser(prog='cdrsnr', description='Reads Cisco CDR files and creates a simplfied call record for a single number')
 parser.add_argument('-i', '--input', required=True, help='CDR file input (must be csv)')
@@ -39,15 +44,22 @@ parser.add_argument('-n','--phonenumber', required=True, help='Phone number rege
 parser.add_argument('-o', '--output', required=False, help='Output file')
 parser.add_argument('-x', '--exclude', required=False, help='Excluded number regex pattern')
 parser.add_argument('-l', '--list-forwarded', required=False, help='List number regex as forwarded to number')
+parser.add_argument('-a', '--append', required=False, help='File to append records to')
 args = parser.parse_args()
 
 ## END of CLI switches
 
 ## Var's that can be changed
-if len(args.output) == 0:
+if args.output is None and args.append is None:
     outputfile = "Call_Report_"+args.phonenumber+".csv"
-else:
+elif args.output is not None != 0 and args.append is None:
     outputfile = args.output
+
+if args.output is None and args.append is not None:
+    appendFile = args.append
+
+if args.output is not None and args.output is not None:
+    raise SystemExit('Cannot have both output and append files!')
 
 ## Variable translations
 excludedNumberStr = args.exclude
@@ -56,9 +68,13 @@ forwardedNumberStr = args.list_forwarded
 ## arg.input is the input file
 phonenumber = args.phonenumber
 
-#create parsed output cvs 
-parsedoutput = open(outputfile, 'w+')
-parsedoutput.write("Incoming/Outgoing,Start of Call,End of Call,Duration (Seconds),Caller Number,Call Answered By,Call Forwarded To\n")
+#create parsed output cvs
+if outputfile is not None:
+    parsedoutput = open(outputfile, 'w')
+    parsedoutput.write("Incoming/Outgoing,Start of Call,End of Call,Duration (Seconds),Caller Number,Call Answered By,Call Forwarded To\n")
+elif appendFile is not None:
+    parsedoutput = open(appendFile, 'a')
+    
 ## columns needed:
 ## starting at zero
 ## 2 - globalCallID_callId
