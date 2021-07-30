@@ -13,16 +13,26 @@
 ## received by a single number, also includes calls that may have been forwarded		##
 ## on to that number.										##
 ##												##
-## usage: Phone_Number_Reporter.py [-h] --input INPUT --phonenumber PHONENUMBER			##
-## optional arguments:										##
-##   -h, --help           		show this help message and exit				##
-##   -i, --input INPUT         		CDR file input (must be csv)				##
-##   -n, --phonenumber PHONENUMBER    	Phone number regex to report on (remember to add 9 if   ##
-##                                      external number)                                        ##
-##   -o, --output                       Output file                                             ##
-##   -x, --exclude                      Excluded number regex pattern                           ##
-##   -l, --list-forwarded               List number regex as forwarded to number                ##
-##   -a, --append                       File to append records to                               ##
+## usage: cdrsnr [-h] -i INPUT -n PHONENUMBER [-o OUTPUT] [-x EXCLUDE]                          ##
+##               [-l LIST_FORWARDED] [-a APPEND]                                                ##
+##                                                                                              ##
+## Reads Cisco CDR files and creates a simplfied call record for a single number                ##
+##                                                                                              ##
+## optional arguments:                                                                          ##
+##   -h, --help            show this help message and exit                                      ##
+##   -i INPUT, --input INPUT                                                                    ##
+##                         CDR file input (must be csv)                                         ##
+##   -n PHONENUMBER, --phonenumber PHONENUMBER                                                  ##
+##                         Phone number regex to report on (remember to add 9 if                ##
+##                         external number)                                                     ##
+##   -o OUTPUT, --output OUTPUT                                                                 ##
+##                         Output file                                                          ##
+##   -x EXCLUDE, --exclude EXCLUDE                                                              ##
+##                         Excluded number regex pattern                                        ##
+##   -l LIST_FORWARDED, --list-forwarded LIST_FORWARDED                                         ##
+##                         List number regex as forwarded to number                             ##
+##   -a APPEND, --append APPEND                                                                 ##
+##                         File to append records to                                            ##
 ##################################################################################################
 
 import csv
